@@ -1,0 +1,27 @@
+{
+  "name": "appointment-planner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hwang-mcmaster/appointment_planner.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hwang-mcmaster/appointment_planner/issues"
+  },
+  "homepage": "https://github.com/hwang-mcmaster/appointment_planner#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mustache-express": "^1.3.2",
+    "nodemon": "^3.1.14",
+    "sqlite3": "^5.1.7"
+  }
+}
