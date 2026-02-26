@@ -12,11 +12,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Basic route
-app.get('/', (req, res) => {
-    res.render('index', {
-        pageTitle: 'Simple Appointment Planner'
-    });
-});
+const appointmentsController = require('./controllers/appointments.ctrl');
+
+app.get('/', appointmentsController.showHome);
 
 const PORT = 3000;
 app.listen(PORT, () => {
