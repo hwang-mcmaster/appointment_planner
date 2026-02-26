@@ -2,3 +2,47 @@ body {
     font-family: Arial, sans-serif;
     padding: 20px;
 }
+
+.layout {
+    display: flex;
+    gap: 20px;
+}
+
+.left {
+    width: 40%;
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+
+.right {
+    width: 60%;
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+
+.apptList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.apptItem {
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.apptTitle {
+    font-weight: bold;
+}
+
+.apptMeta {
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.apptActions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+}
