@@ -14,7 +14,9 @@
             <ul class="apptList">
                 {{#appointments}}
                     <li class="apptItem">
-                        <div class="apptTitle">{{title}}</div>
+                        <div class="apptTitle">
+                            <a href="/appointments/{{id}}">{{title}}</a>
+                        </div>
                         <div class="apptMeta">{{date}} {{start_time}} to {{end_time}}</div>
                         <div class="apptMeta">{{location_name}} {{status}}</div>
                         <div class="apptActions">
