@@ -1,4 +1,4 @@
-const db = require('./db')
+const db = require('./db');
 
 function init() {
     db.serialize(() => {
@@ -16,17 +16,17 @@ function init() {
                 longitude REAL,
                 status TEXT NOT NULL
             )
-        `)
+        `);
 
         db.get(`SELECT COUNT(*) AS count FROM appointments`, (err, row) => {
-            if (err) return
+            if (err) return;
 
             if (row.count === 0) {
                 const stmt = db.prepare(`
                     INSERT INTO appointments
                     (title, description, date, start_time, end_time, location_name, location_address, latitude, longitude, status)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `)
+                `);
 
                 stmt.run(
                     'Team Meeting',
@@ -39,7 +39,7 @@ function init() {
                     43.2609,
                     -79.9192,
                     'Upcoming'
-                )
+                );
 
                 stmt.run(
                     'Doctor Visit',
@@ -52,19 +52,19 @@ function init() {
                     43.2557,
                     -79.8711,
                     'Past'
-                )
+                );
 
-                stmt.finalize()
+                stmt.finalize();
             }
-        })
-    })
+        });
+    });
 }
 
 function getAll(cb) {
     db.all(
         `SELECT * FROM appointments ORDER BY date ASC, start_time ASC`,
         (err, rows) => cb(err, rows)
-    )
+    );
 }
 
 function getById(id, cb) {
@@ -72,11 +72,11 @@ function getById(id, cb) {
         `SELECT * FROM appointments WHERE id = ?`,
         [id],
         (err, row) => cb(err, row)
-    )
+    );
 }
 
 module.exports = {
     init,
     getAll,
     getById
-}
+};

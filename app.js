@@ -2,23 +2,25 @@ const express = require('express');
 const mustacheExpress = require('mustache-express');
 const path = require('path');
 
-const appointmentsModel = require('./models/appointments.model')
-appointmentsModel.init()
+const appointmentsController = require('./controllers/appointments.ctrl');
+const appointmentsModel = require('./models/appointments.model');
 
 const app = express();
+
+// Initialize database
+appointmentsModel.init();
 
 // Mustache setup
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', path.join(__dirname, 'views'));
 
+// Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Basic route
-const appointmentsController = require('./controllers/appointments.ctrl');
-
+// Routes
 app.get('/', appointmentsController.showHome);
-app.get('/appointments/:id', appointmentsController.showById)
+app.get('/appointments/:id', appointmentsController.showById);
 
 const PORT = 3000;
 app.listen(PORT, () => {
