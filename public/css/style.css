@@ -46,3 +46,27 @@ body {
     display: flex;
     gap: 8px;
 }
+
+.apptForm {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.apptForm input,
+.apptForm select {
+    padding: 6px;
+    border: 1px solid #ddd;
+}
+
+.errorBox {
+    border: 1px solid #cc0000;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.errorText {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
