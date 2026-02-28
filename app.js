@@ -18,6 +18,8 @@ app.set('views', path.join(__dirname, 'views'));
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.urlencoded({ extended: false }));
+
 // Routes
 app.get('/', appointmentsController.showHome);
 app.get('/appointments/:id', appointmentsController.showById);
