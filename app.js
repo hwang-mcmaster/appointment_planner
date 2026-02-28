@@ -23,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.get('/', appointmentsController.showHome);
 app.get('/appointments/:id', appointmentsController.showById);
+app.post('/appointments', appointmentsController.createAppointment);
 
 const PORT = 3000;
 app.listen(PORT, () => {
