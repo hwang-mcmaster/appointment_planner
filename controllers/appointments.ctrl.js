@@ -36,6 +36,65 @@ function validateAppointment(body) {
     return errors;
 }
 
+function defaultForm() {
+    return {
+        title: '',
+        description: '',
+        date: '',
+        start_time: '',
+        end_time: '',
+        location_name: '',
+        location_address: '',
+        latitude: '',
+        longitude: '',
+        status: 'Upcoming',
+        formStatusUpcoming: true,
+        formStatusPast: false
+    };
+}
+
+function showHome(req, res) {
+    appointmentsModel.getAll((err, rows) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        const selected = rows.length > 0 ? rows[0] : null;
+
+        res.render('index', {
+            pageTitle: 'Simple Appointment Planner',
+            appointments: rows,
+            selected,
+            form: defaultForm(),
+            errors: {}
+        });
+    });
+}
+
+function showById(req, res) {
+    const id = Number(req.params.id);
+
+    appointmentsModel.getAll((err, rows) => {
+        if (err) {
+            return res.status(500).send('Database error');
+        }
+
+        appointmentsModel.getById(id, (err2, selected) => {
+            if (err2) {
+                return res.status(500).send('Database error');
+            }
+
+            res.render('index', {
+                pageTitle: 'Simple Appointment Planner',
+                appointments: rows,
+                selected,
+                form: defaultForm(),
+                errors: {}
+            });
+        });
+    });
+}
+
 function createAppointment(req, res) {
     const errors = validateAppointment(req.body);
 
@@ -51,6 +110,9 @@ function createAppointment(req, res) {
         longitude: req.body.longitude,
         status: (req.body.status || 'Upcoming').trim()
     };
+
+    form.formStatusUpcoming = form.status === 'Upcoming';
+    form.formStatusPast = form.status === 'Past';
 
     if (Object.keys(errors).length > 0) {
         return appointmentsModel.getAll((err, rows) => {
@@ -75,44 +137,6 @@ function createAppointment(req, res) {
     appointmentsModel.create(apptToInsert, (err) => {
         if (err) return res.status(500).send('Database error');
         res.redirect('/');
-    });
-}
-
-function showHome(req, res) {
-    appointmentsModel.getAll((err, rows) => {
-        if (err) {
-            return res.status(500).send('Database error');
-        }
-
-        const selected = rows.length > 0 ? rows[0] : null;
-
-        res.render('index', {
-            pageTitle: 'Simple Appointment Planner',
-            appointments: rows,
-            selected
-        });
-    });
-}
-
-function showById(req, res) {
-    const id = Number(req.params.id);
-
-    appointmentsModel.getAll((err, rows) => {
-        if (err) {
-            return res.status(500).send('Database error');
-        }
-
-        appointmentsModel.getById(id, (err2, selected) => {
-            if (err2) {
-                return res.status(500).send('Database error');
-            }
-
-            res.render('index', {
-                pageTitle: 'Simple Appointment Planner',
-                appointments: rows,
-                selected
-            });
-        });
     });
 }
 
