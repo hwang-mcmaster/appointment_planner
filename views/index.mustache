@@ -5,37 +5,56 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+
     <h1>{{pageTitle}}</h1>
 
     <div class="layout">
+
+        <!-- LEFT PANEL -->
         <div class="left">
             <h2>Appointments</h2>
 
             <ul class="apptList">
+
                 {{#appointments}}
-                    <li class="apptItem">
-                        <div class="apptTitle">
-                            <a href="/appointments/{{id}}">{{title}}</a>
-                        </div>
-                        <div class="apptMeta">{{date}} {{start_time}} to {{end_time}}</div>
-                        <div class="apptMeta">{{location_name}} {{status}}</div>
-                        <div class="apptActions">
-                            <button>Edit</button>
-                            <button>Delete</button>
-                        </div>
-                    </li>
+                <li class="apptItem">
+                    <div class="apptTitle">
+                        <a href="/appointments/{{id}}">
+                            {{title}}
+                        </a>
+                    </div>
+
+                    <div class="apptMeta">
+                        {{date}} {{start_time}} to {{end_time}}
+                    </div>
+
+                    <div class="apptMeta">
+                        {{location_name}} {{status}}
+                    </div>
+
+                    <div class="apptActions">
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </div>
+                </li>
                 {{/appointments}}
+
                 {{^appointments}}
-                    <li>No appointments yet.</li>
+                <li>No appointments yet.</li>
                 {{/appointments}}
+
             </ul>
         </div>
 
+
+        <!-- RIGHT PANEL -->
         <div class="right">
+
             <h2>Details</h2>
 
             {{#selected}}
                 <p><strong>Title</strong> {{title}}</p>
+                <p><strong>Description</strong> {{description}}</p>
                 <p><strong>Date</strong> {{date}}</p>
                 <p><strong>Time</strong> {{start_time}} to {{end_time}}</p>
                 <p><strong>Location</strong> {{location_name}}</p>
@@ -45,7 +64,71 @@
             {{^selected}}
                 <p>Select an appointment to view details.</p>
             {{/selected}}
+
+
+            <hr>
+
+            <h2>Add Appointment</h2>
+
+            {{#errors}}
+            <div class="errorBox">
+                Please fix the form errors below.
+            </div>
+            {{/errors}}
+
+            <form method="POST" action="/appointments" class="apptForm">
+
+                <label>Title</label>
+                <input name="title" value="{{form.title}}">
+                <div class="errorText">{{errors.title}}</div>
+
+                <label>Description</label>
+                <input name="description" value="{{form.description}}">
+
+                <label>Date</label>
+                <input name="date" placeholder="YYYY-MM-DD" value="{{form.date}}">
+                <div class="errorText">{{errors.date}}</div>
+
+                <label>Start Time</label>
+                <input name="start_time" placeholder="HH:MM" value="{{form.start_time}}">
+                <div class="errorText">{{errors.start_time}}</div>
+
+                <label>End Time</label>
+                <input name="end_time" placeholder="HH:MM" value="{{form.end_time}}">
+                <div class="errorText">{{errors.end_time}}</div>
+                <div class="errorText">{{errors.time}}</div>
+
+                <label>Location Name</label>
+                <input name="location_name" value="{{form.location_name}}">
+
+                <label>Address</label>
+                <input name="location_address" value="{{form.location_address}}">
+
+                <label>Latitude</label>
+                <input name="latitude" value="{{form.latitude}}">
+                <div class="errorText">{{errors.latitude}}</div>
+
+                <label>Longitude</label>
+                <input name="longitude" value="{{form.longitude}}">
+                <div class="errorText">{{errors.longitude}}</div>
+                <div class="errorText">{{errors.coords}}</div>
+
+                <label>Status</label>
+                <select name="status">
+                    <option value="Upcoming" {{#form.formStatusUpcoming}}selected{{/form.formStatusUpcoming}}>
+                        Upcoming
+                    </option>
+                    <option value="Past" {{#form.formStatusPast}}selected{{/form.formStatusPast}}>
+                        Past
+                    </option>
+                </select>
+
+                <button type="submit">Create</button>
+
+            </form>
+
         </div>
     </div>
+
 </body>
 </html>
