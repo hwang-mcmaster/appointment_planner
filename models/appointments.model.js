@@ -75,8 +75,34 @@ function getById(id, cb) {
     );
 }
 
+function create(appt, cb) {
+    db.run(
+        `
+        INSERT INTO appointments
+        (title, description, date, start_time, end_time, location_name, location_address, latitude, longitude, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `,
+        [
+            appt.title,
+            appt.description,
+            appt.date,
+            appt.start_time,
+            appt.end_time,
+            appt.location_name,
+            appt.location_address,
+            appt.latitude,
+            appt.longitude,
+            appt.status
+        ],
+        function (err) {
+            cb(err, this ? this.lastID : null);
+        }
+    );
+}
+
 module.exports = {
     init,
     getAll,
-    getById
+    getById,
+    create
 };
