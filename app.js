@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get('/', appointmentsController.showHome);
 app.get('/appointments/:id', appointmentsController.showById);
 app.post('/appointments', appointmentsController.createAppointment);
+app.post('/appointments/:id/delete', appointmentsController.deleteAppointment);
 
 const PORT = 3000;
 app.listen(PORT, () => {
