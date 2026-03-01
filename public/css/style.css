@@ -70,3 +70,7 @@ body {
     font-size: 13px;
     margin-bottom: 6px;
 }
+
+.inlineForm {
+    display: inline;
+}
