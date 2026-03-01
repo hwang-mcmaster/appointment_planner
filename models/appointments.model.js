@@ -60,14 +60,22 @@ function init() {
     })
 }
 
-function getAll(filter, sort, cb) {
-    let where = ''
+function getAll(filter, sort, q, cb) {
+    const whereParts = []
     const params = []
 
     if (filter === 'Upcoming' || filter === 'Past') {
-        where = 'WHERE status = ?'
+        whereParts.push('status = ?')
         params.push(filter)
     }
+
+    const query = (q || '').trim()
+    if (query.length > 0) {
+        whereParts.push('title LIKE ?')
+        params.push(`%${query}%`)
+    }
+
+    const where = whereParts.length > 0 ? `WHERE ${whereParts.join(' AND ')}` : ''
 
     let orderBy = 'date ASC, start_time ASC'
     if (sort === 'title') orderBy = 'title ASC'

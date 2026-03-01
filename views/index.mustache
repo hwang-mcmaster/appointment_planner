@@ -3,36 +3,50 @@
 <head>
     <title>{{pageTitle}}</title>
     <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
-    <h1>{{pageTitle}}</h1>
+    <div class="header">
+        <img class="logo" src="/images/calendar.svg" alt="Calendar">
+        <h1>{{pageTitle}}</h1>
+    </div>
 
     <div class="layout">
 
         <div class="left">
             <h2>Appointments</h2>
 
-            <div>
+            <form method="GET" action="/" class="searchRow">
+                <input type="hidden" name="filter" value="{{currentFilter}}">
+                <input type="hidden" name="sort" value="{{currentSort}}">
+                <input name="q" placeholder="Search title" value="{{currentQ}}">
+                <button type="submit">Search</button>
+            </form>
+
+            <div class="linkRow">
                 <a href="{{filterAllUrl}}">All</a>
                 <a href="{{filterUpcomingUrl}}">Upcoming</a>
                 <a href="{{filterPastUrl}}">Past</a>
             </div>
 
-            <div>
-                <a href="{{sortDateUrl}}">Sort by date</a>
-                <a href="{{sortTitleUrl}}">Sort by title</a>
-                <a href="{{sortStatusUrl}}">Sort by status</a>
+            <div class="linkRow">
+                <a href="{{sortDateUrl}}">Date</a>
+                <a href="{{sortTitleUrl}}">Title</a>
+                <a href="{{sortStatusUrl}}">Status</a>
             </div>
 
             <ul class="apptList">
 
                 {{#appointments}}
                 <li class="apptItem">
-                    <div class="apptTitle">
-                        <a href="/appointments/{{id}}?filter={{currentFilter}}&sort={{currentSort}}">
-                            {{title}}
-                        </a>
+                    <div class="apptTop">
+                        <div class="apptTitle">
+                            <a href="/appointments/{{id}}?filter={{currentFilter}}&sort={{currentSort}}&q={{currentQ}}">
+                                {{title}}
+                            </a>
+                        </div>
+                        <div class="apptBadge">{{status}}</div>
                     </div>
 
                     <div class="apptMeta">
@@ -40,11 +54,11 @@
                     </div>
 
                     <div class="apptMeta">
-                        {{location_name}} {{status}}
+                        {{location_name}}
                     </div>
 
                     <div class="apptActions">
-                        <a href="/appointments/{{id}}/edit?filter={{currentFilter}}&sort={{currentSort}}">Edit</a>
+                        <a class="actionLink" href="/appointments/{{id}}/edit?filter={{currentFilter}}&sort={{currentSort}}&q={{currentQ}}">Edit</a>
 
                         <form method="POST" action="/appointments/{{id}}/delete" class="inlineForm">
                             <button type="submit">Delete</button>
@@ -54,7 +68,7 @@
                 {{/appointments}}
 
                 {{^appointments}}
-                <li>No appointments yet.</li>
+                <li class="emptyState">No appointments match.</li>
                 {{/appointments}}
 
             </ul>
@@ -136,21 +150,21 @@
 
                 <label>Status</label>
                 <select name="status">
-                    <option value="Upcoming" {{#form.formStatusUpcoming}}selected{{/form.formStatusUpcoming}}>
-                        Upcoming
-                    </option>
-                    <option value="Past" {{#form.formStatusPast}}selected{{/form.formStatusPast}}>
-                        Past
-                    </option>
+                    <option value="Upcoming" {{#form.formStatusUpcoming}}selected{{/form.formStatusUpcoming}}>Upcoming</option>
+                    <option value="Past" {{#form.formStatusPast}}selected{{/form.formStatusPast}}>Past</option>
                 </select>
 
                 {{#editMode}}
-                <button type="submit">Save</button>
-                <a href="/">Cancel</a>
+                <div class="formButtons">
+                    <button type="submit">Save</button>
+                    <a class="actionLink" href="/?filter={{currentFilter}}&sort={{currentSort}}&q={{currentQ}}">Cancel</a>
+                </div>
                 {{/editMode}}
 
                 {{^editMode}}
-                <button type="submit">Create</button>
+                <div class="formButtons">
+                    <button type="submit">Create</button>
+                </div>
                 {{/editMode}}
 
             </form>

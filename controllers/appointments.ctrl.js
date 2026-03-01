@@ -53,31 +53,35 @@ function defaultForm() {
     }
 }
 
-function buildListUrls(filter, sort) {
+function buildListUrls(filter, sort, q) {
     const f = filter || 'All'
     const s = sort || 'date'
+    const query = (q || '').trim()
+    const qPart = query.length > 0 ? `&q=${encodeURIComponent(query)}` : ''
 
     return {
-        filterAllUrl: `/?filter=All&sort=${s}`,
-        filterUpcomingUrl: `/?filter=Upcoming&sort=${s}`,
-        filterPastUrl: `/?filter=Past&sort=${s}`,
-        sortDateUrl: `/?filter=${f}&sort=date`,
-        sortTitleUrl: `/?filter=${f}&sort=title`,
-        sortStatusUrl: `/?filter=${f}&sort=status`,
+        filterAllUrl: `/?filter=All&sort=${s}${qPart}`,
+        filterUpcomingUrl: `/?filter=Upcoming&sort=${s}${qPart}`,
+        filterPastUrl: `/?filter=Past&sort=${s}${qPart}`,
+        sortDateUrl: `/?filter=${f}&sort=date${qPart}`,
+        sortTitleUrl: `/?filter=${f}&sort=title${qPart}`,
+        sortStatusUrl: `/?filter=${f}&sort=status${qPart}`,
         currentFilter: f,
-        currentSort: s
+        currentSort: s,
+        currentQ: query
     }
 }
 
 function showHome(req, res) {
     const filter = (req.query.filter || 'All').trim()
     const sort = (req.query.sort || 'date').trim()
+    const q = (req.query.q || '').trim()
 
-    appointmentsModel.getAll(filter, sort, (err, rows) => {
+    appointmentsModel.getAll(filter, sort, q, (err, rows) => {
         if (err) return res.status(500).send('Database error')
 
         const selected = rows.length > 0 ? rows[0] : null
-        const urls = buildListUrls(filter, sort)
+        const urls = buildListUrls(filter, sort, q)
 
         res.render('index', {
             pageTitle: 'Simple Appointment Planner',
@@ -94,14 +98,15 @@ function showById(req, res) {
     const id = Number(req.params.id)
     const filter = (req.query.filter || 'All').trim()
     const sort = (req.query.sort || 'date').trim()
+    const q = (req.query.q || '').trim()
 
-    appointmentsModel.getAll(filter, sort, (err, rows) => {
+    appointmentsModel.getAll(filter, sort, q, (err, rows) => {
         if (err) return res.status(500).send('Database error')
 
         appointmentsModel.getById(id, (err2, selected) => {
             if (err2) return res.status(500).send('Database error')
 
-            const urls = buildListUrls(filter, sort)
+            const urls = buildListUrls(filter, sort, q)
 
             res.render('index', {
                 pageTitle: 'Simple Appointment Planner',
@@ -137,9 +142,10 @@ function createAppointment(req, res) {
     if (Object.keys(errors).length > 0) {
         const filter = 'All'
         const sort = 'date'
-        const urls = buildListUrls(filter, sort)
+        const q = ''
+        const urls = buildListUrls(filter, sort, q)
 
-        return appointmentsModel.getAll(filter, sort, (err, rows) => {
+        return appointmentsModel.getAll(filter, sort, q, (err, rows) => {
             if (err) return res.status(500).send('Database error')
 
             res.render('index', {
@@ -178,8 +184,9 @@ function showEdit(req, res) {
     const id = Number(req.params.id)
     const filter = (req.query.filter || 'All').trim()
     const sort = (req.query.sort || 'date').trim()
+    const q = (req.query.q || '').trim()
 
-    appointmentsModel.getAll(filter, sort, (err, rows) => {
+    appointmentsModel.getAll(filter, sort, q, (err, rows) => {
         if (err) return res.status(500).send('Database error')
 
         appointmentsModel.getById(id, (err2, selected) => {
@@ -202,7 +209,7 @@ function showEdit(req, res) {
             form.formStatusUpcoming = form.status === 'Upcoming'
             form.formStatusPast = form.status === 'Past'
 
-            const urls = buildListUrls(filter, sort)
+            const urls = buildListUrls(filter, sort, q)
 
             res.render('index', {
                 pageTitle: 'Simple Appointment Planner',
@@ -241,9 +248,10 @@ function updateAppointment(req, res) {
     if (Object.keys(errors).length > 0) {
         const filter = 'All'
         const sort = 'date'
-        const urls = buildListUrls(filter, sort)
+        const q = ''
+        const urls = buildListUrls(filter, sort, q)
 
-        return appointmentsModel.getAll(filter, sort, (err, rows) => {
+        return appointmentsModel.getAll(filter, sort, q, (err, rows) => {
             if (err) return res.status(500).send('Database error')
 
             appointmentsModel.getById(id, (err2, selected) => {
