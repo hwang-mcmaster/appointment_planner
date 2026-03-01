@@ -169,7 +169,6 @@ body {
     margin-bottom: 6px;
 }
 
-/* Responsive changes below 768px */
 @media (max-width: 768px) {
     .layout {
         flex-direction: column;

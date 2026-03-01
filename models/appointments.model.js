@@ -12,8 +12,6 @@ function init() {
                 end_time TEXT NOT NULL,
                 location_name TEXT,
                 location_address TEXT,
-                latitude REAL,
-                longitude REAL,
                 status TEXT NOT NULL
             )
         `)
@@ -24,8 +22,8 @@ function init() {
             if (row.count === 0) {
                 const stmt = db.prepare(`
                     INSERT INTO appointments
-                    (title, description, date, start_time, end_time, location_name, location_address, latitude, longitude, status)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (title, description, date, start_time, end_time, location_name, location_address, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 `)
 
                 stmt.run(
@@ -36,8 +34,6 @@ function init() {
                     '15:00',
                     'Campus',
                     '1280 Main St',
-                    43.2609,
-                    -79.9192,
                     'Upcoming'
                 )
 
@@ -49,8 +45,6 @@ function init() {
                     '10:00',
                     'Clinic',
                     '55 King St',
-                    43.2557,
-                    -79.8711,
                     'Past'
                 )
 
@@ -97,8 +91,8 @@ function create(appt, cb) {
     db.run(
         `
         INSERT INTO appointments
-        (title, description, date, start_time, end_time, location_name, location_address, latitude, longitude, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (title, description, date, start_time, end_time, location_name, location_address, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
             appt.title,
@@ -108,8 +102,6 @@ function create(appt, cb) {
             appt.end_time,
             appt.location_name,
             appt.location_address,
-            appt.latitude,
-            appt.longitude,
             appt.status
         ],
         function (err) {
@@ -139,8 +131,6 @@ function updateById(id, appt, cb) {
             end_time = ?,
             location_name = ?,
             location_address = ?,
-            latitude = ?,
-            longitude = ?,
             status = ?
         WHERE id = ?
         `,
@@ -152,8 +142,6 @@ function updateById(id, appt, cb) {
             appt.end_time,
             appt.location_name,
             appt.location_address,
-            appt.latitude,
-            appt.longitude,
             appt.status,
             id
         ],

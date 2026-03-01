@@ -8,9 +8,6 @@ function validateAppointment(body) {
     const start_time = (body.start_time || '').trim()
     const end_time = (body.end_time || '').trim()
 
-    const latitude = body.latitude === '' || body.latitude === undefined ? null : Number(body.latitude)
-    const longitude = body.longitude === '' || body.longitude === undefined ? null : Number(body.longitude)
-
     if (title.length < 2) errors.title = 'Title must be at least 2 characters'
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) errors.date = 'Date must be in YYYY-MM-DD format'
@@ -19,18 +16,6 @@ function validateAppointment(body) {
 
     if (!errors.start_time && !errors.end_time) {
         if (end_time <= start_time) errors.time = 'End time must be later than start time'
-    }
-
-    const hasLat = body.latitude !== '' && body.latitude !== undefined
-    const hasLng = body.longitude !== '' && body.longitude !== undefined
-
-    if (hasLat || hasLng) {
-        if (!hasLat || !hasLng) {
-            errors.coords = 'Latitude and longitude must both be provided'
-        } else {
-            if (Number.isNaN(latitude) || latitude < -90 || latitude > 90) errors.latitude = 'Latitude must be between -90 and 90'
-            if (Number.isNaN(longitude) || longitude < -180 || longitude > 180) errors.longitude = 'Longitude must be between -180 and 180'
-        }
     }
 
     return errors
@@ -45,8 +30,6 @@ function defaultForm() {
         end_time: '',
         location_name: '',
         location_address: '',
-        latitude: '',
-        longitude: '',
         status: 'Upcoming',
         formStatusUpcoming: true,
         formStatusPast: false
@@ -131,8 +114,6 @@ function createAppointment(req, res) {
         end_time: (req.body.end_time || '').trim(),
         location_name: (req.body.location_name || '').trim(),
         location_address: (req.body.location_address || '').trim(),
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
         status: (req.body.status || 'Upcoming').trim()
     }
 
@@ -159,15 +140,9 @@ function createAppointment(req, res) {
         })
     }
 
-    const apptToInsert = {
-        ...form,
-        latitude: form.latitude === '' ? null : Number(form.latitude),
-        longitude: form.longitude === '' ? null : Number(form.longitude)
-    }
-
-    appointmentsModel.create(apptToInsert, (err) => {
+    appointmentsModel.create(form, (err) => {
         if (err) return res.status(500).send('Database error')
-        res.redirect('/')
+        res.redirect('/?filter=All&sort=date')
     })
 }
 
@@ -176,7 +151,7 @@ function deleteAppointment(req, res) {
 
     appointmentsModel.deleteById(id, (err) => {
         if (err) return res.status(500).send('Database error')
-        res.redirect('/')
+        res.redirect('/?filter=All&sort=date')
     })
 }
 
@@ -201,8 +176,6 @@ function showEdit(req, res) {
                 end_time: selected.end_time || '',
                 location_name: selected.location_name || '',
                 location_address: selected.location_address || '',
-                latitude: selected.latitude === null || selected.latitude === undefined ? '' : String(selected.latitude),
-                longitude: selected.longitude === null || selected.longitude === undefined ? '' : String(selected.longitude),
                 status: selected.status || 'Upcoming'
             }
 
@@ -237,8 +210,6 @@ function updateAppointment(req, res) {
         end_time: (req.body.end_time || '').trim(),
         location_name: (req.body.location_name || '').trim(),
         location_address: (req.body.location_address || '').trim(),
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
         status: (req.body.status || 'Upcoming').trim()
     }
 
@@ -271,15 +242,9 @@ function updateAppointment(req, res) {
         })
     }
 
-    const apptToUpdate = {
-        ...form,
-        latitude: form.latitude === '' ? null : Number(form.latitude),
-        longitude: form.longitude === '' ? null : Number(form.longitude)
-    }
-
-    appointmentsModel.updateById(id, apptToUpdate, (err) => {
+    appointmentsModel.updateById(id, form, (err) => {
         if (err) return res.status(500).send('Database error')
-        res.redirect(`/appointments/${id}`)
+        res.redirect(`/appointments/${id}?filter=All&sort=date`)
     })
 }
 
