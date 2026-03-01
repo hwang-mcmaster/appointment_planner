@@ -100,9 +100,20 @@ function create(appt, cb) {
     );
 }
 
+function deleteById(id, cb) {
+    db.run(
+        `DELETE FROM appointments WHERE id = ?`,
+        [id],
+        function (err) {
+            cb(err, this ? this.changes : 0);
+        }
+    );
+}
+
 module.exports = {
     init,
     getAll,
     getById,
-    create
+    create,
+    deleteById
 };
