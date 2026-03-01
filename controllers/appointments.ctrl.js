@@ -128,6 +128,15 @@ function createAppointment(req, res) {
         });
     }
 
+function deleteAppointment(req, res) {
+    const id = Number(req.params.id);
+
+    appointmentsModel.deleteById(id, (err) => {
+        if (err) return res.status(500).send('Database error');
+        res.redirect('/');
+    });
+}
+
     const apptToInsert = {
         ...form,
         latitude: form.latitude === '' ? null : Number(form.latitude),
@@ -143,5 +152,6 @@ function createAppointment(req, res) {
 module.exports = {
     showHome,
     showById,
-    createAppointment
+    createAppointment,
+    deleteAppointment
 };
