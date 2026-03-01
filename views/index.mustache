@@ -10,16 +10,27 @@
 
     <div class="layout">
 
-        <!-- LEFT PANEL -->
         <div class="left">
             <h2>Appointments</h2>
+
+            <div>
+                <a href="{{filterAllUrl}}">All</a>
+                <a href="{{filterUpcomingUrl}}">Upcoming</a>
+                <a href="{{filterPastUrl}}">Past</a>
+            </div>
+
+            <div>
+                <a href="{{sortDateUrl}}">Sort by date</a>
+                <a href="{{sortTitleUrl}}">Sort by title</a>
+                <a href="{{sortStatusUrl}}">Sort by status</a>
+            </div>
 
             <ul class="apptList">
 
                 {{#appointments}}
                 <li class="apptItem">
                     <div class="apptTitle">
-                        <a href="/appointments/{{id}}">
+                        <a href="/appointments/{{id}}?filter={{currentFilter}}&sort={{currentSort}}">
                             {{title}}
                         </a>
                     </div>
@@ -33,7 +44,8 @@
                     </div>
 
                     <div class="apptActions">
-                        <button>Edit</button>
+                        <a href="/appointments/{{id}}/edit?filter={{currentFilter}}&sort={{currentSort}}">Edit</a>
+
                         <form method="POST" action="/appointments/{{id}}/delete" class="inlineForm">
                             <button type="submit">Delete</button>
                         </form>
@@ -48,8 +60,6 @@
             </ul>
         </div>
 
-
-        <!-- RIGHT PANEL -->
         <div class="right">
 
             <h2>Details</h2>
@@ -67,10 +77,14 @@
                 <p>Select an appointment to view details.</p>
             {{/selected}}
 
-
             <hr>
 
+            {{#editMode}}
+            <h2>Edit Appointment</h2>
+            {{/editMode}}
+            {{^editMode}}
             <h2>Add Appointment</h2>
+            {{/editMode}}
 
             {{#errors}}
             <div class="errorBox">
@@ -78,7 +92,12 @@
             </div>
             {{/errors}}
 
+            {{#editMode}}
+            <form method="POST" action="/appointments/{{editId}}/update" class="apptForm">
+            {{/editMode}}
+            {{^editMode}}
             <form method="POST" action="/appointments" class="apptForm">
+            {{/editMode}}
 
                 <label>Title</label>
                 <input name="title" value="{{form.title}}">
@@ -125,7 +144,14 @@
                     </option>
                 </select>
 
+                {{#editMode}}
+                <button type="submit">Save</button>
+                <a href="/">Cancel</a>
+                {{/editMode}}
+
+                {{^editMode}}
                 <button type="submit">Create</button>
+                {{/editMode}}
 
             </form>
 

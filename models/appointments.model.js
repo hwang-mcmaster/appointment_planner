@@ -1,4 +1,4 @@
-const db = require('./db');
+const db = require('./db')
 
 function init() {
     db.serialize(() => {
@@ -16,17 +16,17 @@ function init() {
                 longitude REAL,
                 status TEXT NOT NULL
             )
-        `);
+        `)
 
         db.get(`SELECT COUNT(*) AS count FROM appointments`, (err, row) => {
-            if (err) return;
+            if (err) return
 
             if (row.count === 0) {
                 const stmt = db.prepare(`
                     INSERT INTO appointments
                     (title, description, date, start_time, end_time, location_name, location_address, latitude, longitude, status)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `);
+                `)
 
                 stmt.run(
                     'Team Meeting',
@@ -39,7 +39,7 @@ function init() {
                     43.2609,
                     -79.9192,
                     'Upcoming'
-                );
+                )
 
                 stmt.run(
                     'Doctor Visit',
@@ -52,19 +52,29 @@ function init() {
                     43.2557,
                     -79.8711,
                     'Past'
-                );
+                )
 
-                stmt.finalize();
+                stmt.finalize()
             }
-        });
-    });
+        })
+    })
 }
 
-function getAll(cb) {
-    db.all(
-        `SELECT * FROM appointments ORDER BY date ASC, start_time ASC`,
-        (err, rows) => cb(err, rows)
-    );
+function getAll(filter, sort, cb) {
+    let where = ''
+    const params = []
+
+    if (filter === 'Upcoming' || filter === 'Past') {
+        where = 'WHERE status = ?'
+        params.push(filter)
+    }
+
+    let orderBy = 'date ASC, start_time ASC'
+    if (sort === 'title') orderBy = 'title ASC'
+    if (sort === 'status') orderBy = 'status ASC, date ASC, start_time ASC'
+
+    const sql = `SELECT * FROM appointments ${where} ORDER BY ${orderBy}`
+    db.all(sql, params, (err, rows) => cb(err, rows))
 }
 
 function getById(id, cb) {
@@ -72,7 +82,7 @@ function getById(id, cb) {
         `SELECT * FROM appointments WHERE id = ?`,
         [id],
         (err, row) => cb(err, row)
-    );
+    )
 }
 
 function create(appt, cb) {
@@ -95,9 +105,9 @@ function create(appt, cb) {
             appt.status
         ],
         function (err) {
-            cb(err, this ? this.lastID : null);
+            cb(err, this ? this.lastID : null)
         }
-    );
+    )
 }
 
 function deleteById(id, cb) {
@@ -105,9 +115,44 @@ function deleteById(id, cb) {
         `DELETE FROM appointments WHERE id = ?`,
         [id],
         function (err) {
-            cb(err, this ? this.changes : 0);
+            cb(err, this ? this.changes : 0)
         }
-    );
+    )
+}
+
+function updateById(id, appt, cb) {
+    db.run(
+        `
+        UPDATE appointments
+        SET title = ?,
+            description = ?,
+            date = ?,
+            start_time = ?,
+            end_time = ?,
+            location_name = ?,
+            location_address = ?,
+            latitude = ?,
+            longitude = ?,
+            status = ?
+        WHERE id = ?
+        `,
+        [
+            appt.title,
+            appt.description,
+            appt.date,
+            appt.start_time,
+            appt.end_time,
+            appt.location_name,
+            appt.location_address,
+            appt.latitude,
+            appt.longitude,
+            appt.status,
+            id
+        ],
+        function (err) {
+            cb(err, this ? this.changes : 0)
+        }
+    )
 }
 
 module.exports = {
@@ -115,5 +160,6 @@ module.exports = {
     getAll,
     getById,
     create,
-    deleteById
-};
+    deleteById,
+    updateById
+}
