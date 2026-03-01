@@ -34,7 +34,9 @@
 
                     <div class="apptActions">
                         <button>Edit</button>
-                        <button>Delete</button>
+                        <form method="POST" action="/appointments/{{id}}/delete" class="inlineForm">
+                            <button type="submit">Delete</button>
+                        </form>
                     </div>
                 </li>
                 {{/appointments}}
